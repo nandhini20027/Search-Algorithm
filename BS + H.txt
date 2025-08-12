@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_NODES 20
+#define BEAM_WIDTH 2
+typedef struct Node {
+    int state;
+    int heuristic;
+} Node;
+int heuristic(int state) {
+    // Smaller difference from goal = better
+    int goal = 10;
+    return abs(goal - state);
+}
+int expand(Node current, Node children[]) {
+    int count = 0;
+    int next1 = current.state + 1;
+    int next2 = current.state + 2;
+
+    if (next1 <= 15) {
+        children[count].state = next1;
+        children[count].heuristic = heuristic(next1);
+        count++;
+    }
+    if (next2 <= 15) {
+        children[count].state = next2;
+        children[count].heuristic = heuristic(next2);
+        count++;
+    }
+    return count;
+}
+int compare(const void *a, const void *b) {
+    Node *n1 = (Node *)a;
+    Node *n2 = (Node *)b;
+    return n1->heuristic - n2->heuristic;
+}
+
+int main() {
+    Node start = {0, heuristic(0)};
+    Node beam[BEAM_WIDTH];
+    Node nextLevel[MAX_NODES];
+    Node history[100];
+    int historyCount = 0;
+    beam[0] = start;
+    int beamCount = 1;
+    while (beamCount > 0) {
+        // Save current beam states in history
+        for (int i = 0; i < beamCount; i++) {
+            history[historyCount++] = beam[i];
+        }
+        for (int i = 0; i < beamCount; i++) {
+            if (beam[i].state == 10) {
+                printf("Goal found: %d\n\n", beam[i].state);
+
+                printf("Beam Search History:\n");
+                for (int h = 0; h < historyCount; h++) {
+                    printf("Step %d: State=%d, Heuristic=%d\n",
+                           h, history[h].state, history[h].heuristic);
+                }
+                return 0;
+            }
+        }
+        int nextCount = 0;
+        for (int i = 0; i < beamCount; i++) {
+            Node children[2];
+            int count = expand(beam[i], children);
+            for (int j = 0; j < count; j++) {
+                nextLevel[nextCount++] = children[j];
+            }
+        }
+        // Sort by heuristic and pick top BEAM_WIDTH
+        qsort(nextLevel, nextCount, sizeof(Node), compare);
+        beamCount = (nextCount < BEAM_WIDTH) ? nextCount : BEAM_WIDTH;
+        for (int i = 0; i < beamCount; i++) {
+            beam[i] = nextLevel[i];
+        }
+    }
+    printf("Goal not found.\n");
+    return 0;
+}

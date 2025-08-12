@@ -1,0 +1,46 @@
+#include <stdio.h>
+#define MAX 10
+int adj[MAX][MAX], visited[MAX];
+int history[MAX], historyIndex = 0;
+int n;
+void DFS(int v) {
+    visited[v] = 1;
+    history[historyIndex++] = v; // Store in history
+
+    for (int i = 0; i < n; i++) {
+        if (adj[v][i] == 1 && !visited[i]) {
+            DFS(i);
+        }
+    }
+}
+int main() {
+    int edges, v1, v2, start;
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    // Initialize adjacency matrix
+    for (int i = 0; i < n; i++) {
+        visited[i] = 0;
+        for (int j = 0; j < n; j++) {
+            adj[i][j] = 0;
+        }
+    }
+    printf("Enter number of edges: ");
+    scanf("%d", &edges);
+    printf("Enter edges (u v):\n");
+    for (int i = 0; i < edges; i++) {
+        scanf("%d %d", &v1, &v2);
+        adj[v1][v2] = 1;
+        adj[v2][v1] = 1;
+    }
+    printf("Enter starting vertex: ");
+    scanf("%d", &start);
+    DFS(start);
+    printf("\nDFS Traversal Order: ");
+    for (int i = 0; i < historyIndex; i++) {
+        printf("%d ", history[i]);
+    }
+    printf("\n");
+    return 0;
+}

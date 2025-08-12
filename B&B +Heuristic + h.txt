@@ -1,0 +1,69 @@
+#include <stdio.h>
+#include <limits.h>
+#include <stdbool.h>
+#define N 5 
+int minFNode(int f[], bool visited[]) {
+    int min = INT_MAX, index = -1;
+    for (int i = 0; i < N; i++) {
+        if (!visited[i] && f[i] < min) {
+            min = f[i];
+            index = i;
+        }
+    }
+    return index;
+}
+void aStar(int graph[N][N], int heuristic[], int start, int goal) {
+    int g[N], f[N], parent[N];
+    bool visited[N] = {false};
+    for (int i = 0; i < N; i++) {
+        g[i] = INT_MAX;
+        f[i] = INT_MAX;
+        parent[i] = -1;
+    }
+
+    g[start] = 0;
+    f[start] = heuristic[start];
+    printf("A* Search (Branch & Bound + Heuristic + History)\n");
+    printf("History of visited nodes: ");
+    while (1) {
+        int current = minFNode(f, visited);
+        if (current == -1) break; 
+        visited[current] = true;
+        printf("%d ", current);
+        if (current == goal) break; 
+        for (int i = 0; i < N; i++) {
+            if (graph[current][i] > 0 && !visited[i]) {
+                int newG = g[current] + graph[current][i];
+                if (newG < g[i]) {
+                    g[i] = newG;
+                    f[i] = g[i] + heuristic[i];
+                    parent[i] = current;
+                }
+            }
+        }
+    }
+    printf("\nOptimal Path: ");
+    int path[N], count = 0, node = goal;
+    while (node != -1) {
+        path[count++] = node;
+        node = parent[node];
+    }
+    for (int i = count - 1; i >= 0; i--) {
+        printf("%d", path[i]);
+        if (i > 0) printf(" -> ");
+    }
+    printf("\nTotal Cost: %d\n", g[goal]);
+}
+int main() {
+    int graph[N][N] = {
+        {0, 2, 0, 6, 0},
+        {2, 0, 3, 2, 0},
+        {0, 3, 0, 0, 1},
+        {6, 2, 0, 0, 4},
+        {0, 0, 1, 4, 0}
+    };
+    int heuristic[N] = {7, 6, 2, 1, 0};
+    int start = 0, goal = 4;
+    aStar(graph, heuristic, start, goal);
+    return 0;
+}

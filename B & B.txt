@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <limits.h>
+#define N 4  
+int cost[N][N] = {
+    {0, 10, 15, 20},
+    {10, 0, 35, 25},
+    {15, 35, 0, 30},
+    {20, 25, 30, 0}
+};
+int bestCost = INT_MAX;
+int bestPath[N+1]; // To store best route
+
+void copyPath(int path[]) {
+    for (int i = 0; i <= N; i++)
+        bestPath[i] = path[i];
+}
+void branchAndBound(int path[], int visited[], int level, int currentCost) {
+    // If all cities are visited
+    if (level == N) {
+        currentCost += cost[path[level-1]][path[0]]; 
+        if (currentCost < bestCost) {
+            bestCost = currentCost;
+            path[level] = path[0];
+            copyPath(path);
+        }
+        return;
+    }
+    // Prune if cost already exceeds best
+    if (currentCost >= bestCost) return;
+    for (int city = 0; city < N; city++) {
+        if (!visited[city]) {
+            visited[city] = 1;
+            path[level] = city;
+            branchAndBound(path, visited, level + 1, currentCost + cost[path[level-1]][city]);
+            visited[city] = 0;
+        }
+    }
+}
+
+int main() {
+    int visited[N] = {0};
+    int path[N+1];
+    visited[0] = 1; // Start from node 0
+    path[0] = 0;
+    branchAndBound(path, visited, 1, 0);
+    printf("Best Path (Branch and Bound): ");
+    for (int i = 0; i <= N; i++)
+        printf("%d ", bestPath[i]);
+    printf("\nMinimum Cost: %d\n", bestCost);
+    return 0;
+}

@@ -1,0 +1,66 @@
+#include <stdio.h>
+#define MAX 20
+typedef struct {
+    int node;
+    int score; // Priority value
+} State;
+// Sort states by score (descending)
+void sortStates(State arr[], int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = i + 1; j < size; j++) {
+            if (arr[j].score > arr[i].score) {
+                State temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+}
+int main() {
+    // Adjacency matrix for a small graph
+    int adj[6][6] = {
+        {0, 1, 1, 0, 0, 0},
+        {0, 0, 1, 1, 0, 0},
+        {0, 0, 0, 1, 1, 0},
+        {0, 0, 0, 0, 1, 1},
+        {0, 0, 0, 0, 0, 1},
+        {0, 0, 0, 0, 0, 0}
+    };
+    // Scores for each node (like heuristic values)
+    int scores[6] = {10, 8, 6, 9, 5, 7};
+    int beamWidth = 2; // Keep only top 2 at each level
+    int level = 0;
+    State currentLevel[MAX], nextLevel[MAX];
+    int curSize = 1, nextSize;
+    // Start with node 0
+    currentLevel[0].node = 0;
+    currentLevel[0].score = scores[0];
+    printf("Beam Search Traversal (Beam Width = %d):\n", beamWidth);
+    while (curSize > 0) {
+        printf("Level %d: ", level);
+        for (int i = 0; i < curSize; i++) {
+            printf("Node %d(score=%d) ", currentLevel[i].node, currentLevel[i].score);
+        }
+        printf("\n");
+        nextSize = 0;
+        for (int i = 0; i < curSize; i++) {
+            int node = currentLevel[i].node;
+            for (int j = 0; j < 6; j++) {
+                if (adj[node][j] == 1) {
+                    nextLevel[nextSize].node = j;
+                    nextLevel[nextSize].score = scores[j];
+                    nextSize++;
+                }
+            }
+        }
+        if (nextSize == 0) break;
+        sortStates(nextLevel, nextSize);
+        if (nextSize > beamWidth) nextSize = beamWidth;
+        for (int i = 0; i < nextSize; i++) {
+            currentLevel[i] = nextLevel[i];
+        }
+        curSize = nextSize;
+        level++;
+    }
+    return 0;
+}

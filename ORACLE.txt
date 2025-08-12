@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX_PATH 10
+void oracleSearch(char path[][10], int pathLength) {
+    printf("Oracle Search starting...\n");
+    printf("Following the pre-known optimal path:\n");
+    printf("History: ");
+    for (int i = 0; i < pathLength; i++) {
+        printf("%s", path[i]);
+        if (i != pathLength - 1) printf(" -> ");
+    }
+    printf("\nTotal steps taken: %d\n", pathLength - 1);
+    printf("Goal reached: %s\n", path[pathLength - 1]);
+}
+int main() {
+    // Oracle's pre-known path
+    char optimalPath[MAX_PATH][10] = {
+        "A", "B", "D", "G" // G is the goal
+    };
+    int pathLength = 4;
+    oracleSearch(optimalPath, pathLength);
+    return 0;
+}

@@ -1,0 +1,41 @@
+#include <stdio.h>
+
+int main() {
+    int cost[3][3] = {
+        {0, 4, 1},
+        {4, 0, 3},
+        {1, 3, 0}
+    };
+    
+    int path[3] = {0, 1, 2}; // Cities
+    int minCost = 9999;
+    int bestPath[3];
+    
+    // Try all permutations manually (since only 3 cities)
+    int i, j, k;
+    int cities[3] = {0, 1, 2};
+
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            if (j == i) continue;
+            for (k = 0; k < 3; k++) {
+                if (k == i || k == j) continue;
+                
+                int total = cost[i][j] + cost[j][k] + cost[k][i];
+                
+                if (total < minCost) {
+                    minCost = total;
+                    bestPath[0] = i;
+                    bestPath[1] = j;
+                    bestPath[2] = k;
+                }
+            }
+        }
+    }
+    
+    printf("Minimum cost: %d\n", minCost);
+    printf("Best path: %d -> %d -> %d -> %d\n", 
+           bestPath[0], bestPath[1], bestPath[2], bestPath[0]);
+    
+    return 0;
+}

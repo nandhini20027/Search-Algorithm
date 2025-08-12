@@ -1,0 +1,27 @@
+#include <stdio.h>
+double f(double x) {
+    return -(x * x) + 6 * x + 5; // Example: -x^2 + 6x + 5
+}
+int main() {
+    double currentX = 0;      
+    double stepSize = 0.1;    
+    double currentVal = f(currentX);
+    double nextX, nextVal;
+
+    printf("Starting at x = %.2f, f(x) = %.2f\n", currentX, currentVal);
+
+    while (1) {
+        nextX = currentX + stepSize;
+        nextVal = f(nextX);
+
+        if (nextVal > currentVal) {
+            currentX = nextX;
+            currentVal = nextVal;
+            printf("Moved to x = %.2f, f(x) = %.2f\n", currentX, currentVal);
+        } else {
+            break; 
+        }
+    }
+    printf("\nPeak found at x = %.2f with value f(x) = %.2f\n", currentX, currentVal);
+    return 0;
+}

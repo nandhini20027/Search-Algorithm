@@ -1,0 +1,42 @@
+#include <stdio.h>
+double f(double x) {
+    return -(x * x) + 6 * x + 5; // Example: -x^2 + 6x + 5
+}
+
+int main() {
+    double history[100];  // Store positions
+    double valueHistory[100]; // Store function values
+    int stepCount = 0;
+
+    double currentX = 0;   // Starting point
+    double stepSize = 0.1; // Step size
+    double currentVal = f(currentX);
+    double nextX, nextVal;
+
+    // Store initial state
+    history[stepCount] = currentX;
+    valueHistory[stepCount] = currentVal;
+    stepCount++;
+
+    while (1) {
+        nextX = currentX + stepSize;
+        nextVal = f(nextX);
+
+        if (nextVal > currentVal) {
+            currentX = nextX;
+            currentVal = nextVal;
+
+            history[stepCount] = currentX;
+            valueHistory[stepCount] = currentVal;
+            stepCount++;
+        } else {
+            break; // No improvement — stop
+        }
+    }
+    printf("Hill Climbing History:\n");
+    for (int i = 0; i < stepCount; i++) {
+        printf("Step %d: x = %.2f, f(x) = %.2f\n", i, history[i], valueHistory[i]);
+    }
+    printf("\nPeak found at x = %.2f with value f(x) = %.2f\n", currentX, currentVal);
+    return 0;
+}
