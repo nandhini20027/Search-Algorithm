@@ -1,4 +1,4 @@
-This repository contains implementations of several graph/tree search algorithms in C, including:
+It Contains search algorithm implementations written in C. It covers both uninformed (BFS, DFS) and informed search strategies (Beam Search, Oracle Search, Branch and Bound with heuristics). These are several implementations search algorithms, including:
 1. BMS (Exhaustic Search )
 2. DFS
 3. BFS
